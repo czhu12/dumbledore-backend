@@ -1,0 +1,1249 @@
+
+----------------------------------------------------------------------
+
+h1. Big O Notation
+
+p.  A way to describe how fast an algorithm is
+
+h2. I need a metaphor
+
+<img src="alphabet.png" style="width: 500px"/>
+
+p. Say that we have a phone book with 26 names in it (one for each letter of the alphabet). If we wanted to search for name Zed, one strategy would be to go through the names one by one, until I reach Zed. Lets say it takes me 1 second to read each name. So for the 26th name, it took me 26 seconds to reach Zed.
+
+p. Another strategy one might take is to split the phone book right down the middle. That means I land on M.
+
+<img src="a1.png" style="width: 500px"/>
+
+I know that Z is later than M, so I ignore the first half. This means there's half the amount of letters I have to search! 
+
+It's a good strategy so we continue. We split right down the middle of the second half. That gets me to T.
+
+<img src="a2.png" style="width: 500px"/>
+
+ I split again that gets me to W, and I split again, that gets me to W, then Y, and then I won't have to split again and hit Zed. That takes about 5 steps, so 5 seconds.
+
+<img src="a3.png" style="width: 500px"/>
+
+<img src="a4.png" style="width: 500px"/>
+
+<img src="a5.png" style="width: 500px"/>
+
+h2. So whats "big O" then?
+
+Lets think about what just happened there. Our phone book has <b>26</b> names, and in our first strategy, I had to read <b>26</b> names. If our phone book had <b>1000</b> names, I would have to read <b>1000</b> names to find the last one.
+
+But, in the smarter approach we just discussed, with 26 names, I only had to read through <b><i>5 names</i></b> to find Zed! But heres the amazing thing: if we had twice as many names (52 names), would I have to read through twice as many names? Nope! I'd only have to read one more, since every step cuts the number of letters we are looking at in half.
+
+So in our first strategy, if we had <i>n</i> names in our phone book, we have to read through <i>n</i> names.
+
+In our second strategy, if we had <i>n</i> names in our phone book, we only have to read through <i>log(n)</i> names.
+
+h2. But wait!
+
+Something doesn't feel right here. Why did we choose the name Zed to search for. What if we searched for the name Adam (the first name in the phone book). In this case, our second strategy would still take 5 steps to find Adam. But the first strategy, would take only 1! So how could we say the second strategy is better? Turns out, <b>the only thing we care about is the worst case for each strategy</b>. Why?
+
+h2. Computers are fast, but not that fast
+
+In a phone book with 26 names, a computer using both strategies would find the name instantly. But, lets say you have a phone book with 2 billion names, (which is what Facebook is). In this case, if we tried to find the last person in the phone book with our first strategy, our computer would have to read through 2 billion names. But with our second strategy, we would only have to read through: log(2 billion) = 31 names.
+
+h2. What does this mean in code?
+
+p. Well in code, we have arrays. ['Anna', 'Bea', 'Cabuay', 'David', 'Elon']. A computer is dumb, and can only access elements one by one. A sequential search to Elon would take 5 steps. But a binary search would only about three. (We'll split down the middle and see that it must be in the half that has ['David', 'Elon'], then we take one step to split on Elon, and then we choose Elon.
+
+h2. Summary
+
+p. Big O notation tells you the number of steps it takes to accomplish a task relative to the number of elements you have. Big O might refer to worst case, average case or best case.
+
+For this course, we will define Big O as the worst case scenario.
+
+So in the example above, since you have 26 elements, and it took 26 steps, to accomplish your task, a sequential search costs, at worst, @O(n)@ time, where n is the number of elements involved. However, the second strategy, a "binary" search costs @O(logn)@ steps relative to n elements.
+
+p. Another way to figure out what the @big O@ is, is to ask yourself, at worst, how many operations do I need to do / elements to access to accomplish my goal?
+
+----------------------------------------------------------------------
+h1. Stacks
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="stack.mp4"></source>
+  <source type="video/webm" src="stack.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+
+h2. I need a metaphor!
+* Imagine a stack of books. You could pile on more books on top. The last ones you put are the first ones to go out should you need it.
+
+h2. Examples of when to use a stack
+
+* Undo / redo in a document. Every action will get pushed or popped
+
+h2. How well does a stack perform?
+
+* Finding an item: @O(n)@
+* Inserting an item: @O(1)@
+* Deleting an item: @O(1)@
+
+
+h2. What operations can you do with a stack?
+
+* push, pop, find
+* Remember, you cannot insert or delete from anywhere but the end
+
+h2. Stacks are LIFO
+
+* LIFO - Last in First Out
+
+h2. Why is it O(1) time to insert something. Don't you have to go through n elements
+before you do an insertion?
+
+p. We're not talking about the entire process of finding and then inserting.
+Since you already know the index (location) of where to @push@ the last item,
+all it takes is a simple insertion at that index. Which is constant.
+
+
+p. Here's another way to think about it. If you had a stack of length 100 and you
+wanted to @push@ a new item. Would you have to look at every single item of the list
+to do your insertion if you already know the index of the item? No. You just do
+
+Code:
+my_stack[100] = 'new item'
+
+h2. What does this look like in code?
+
+File: my_stack.py
+my_stack = new Stack()
+my_stack.push('Anna')
+my_stack.push('Bea')
+my_stack.push('Candy')
+
+print(my_stack) # will look like ['Anna', 'Bea', 'Candy']
+
+my_stack.pop()
+
+print(my_stack) # will look like ['Anna', 'Bea']
+EOF
+
+h2. Wait is a stack just a list?
+
+Not really. You could use a python list to implement (create) a stack, but a stack only has
+2 main methods. Push and pop. You could use a list as a stack in this way.
+
+File: my_stack_using_python_lists.py
+my_stack = []
+my_stack.append('Anna')
+my_stack.append('Bea')
+my_stack.append('Candy')
+
+print(my_stack) # will look like ['Anna', 'Bea', 'Candy']
+
+my_stack.pop()
+
+print(my_stack) # will look like ['Anna', 'Bea']
+EOF
+
+
+h2. Summary
+
+* Stacks are last in, first out. You "push" (add) or "pop" (remove) with a stack
+You only push/pop from the end of the stack
+
+----------------------------------------------------------------------
+
+h1. Stacks Exercise
+
+h2. Written Exercises
+
+1. What is the runtime of accessing an item in a stack?
+
+* Answer: @O(n)@
+
+2. What is the runtime for insertion in a stack?
+
+* Answer: @O(1)@
+
+3. What is the runtime for deleting an item in a stack?
+
+* Answer: @O(1)@
+
+4. @my_stack = [10, 2, 50, 30, 7]@. Write down what the stack will look like if you push 1
+
+* Answer: @[10, 2, 50, 30, 7, 1]@
+
+5. @my_stack = [10, 2, 50, 30, 7]@. Write down what the stack will do if you pop it
+
+* Answer: @[10, 2, 50, 30]@
+
+6. @popped_item = [10, 2, 50, 30, 7].pop()@. What is the value of popped item?
+
+* Answer: @7@
+
+7. What's the difference between a stack and a python list?
+
+* Answer: @A stack will only allow for pushing and popping at the end of a list@
+
+h2. Coding Exercises
+
+1. Implement a stack from scratch. 
+
+* Answer:
+File: stack.py
+class Stack:
+  def __init__(self):
+    self.items = []
+
+  def push(self, item):
+    self.items.append(item)
+
+  def pop(self):
+    self.items.pop()
+EOF
+
+h2. Interview Question
+
+1. Valid Parentheses (https://leetcode.com/problems/valid-parentheses/)
+2. Reverse Polish Notation (https://leetcode.com/problems/evaluate-reverse-polish-notation/)
+3. Min Stack (https://leetcode.com/problems/min-stack/)
+
+----------------------------------------------------------------------
+
+h1. Queues
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="queue.mp4"></source>
+  <source type="video/webm" src="queue.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h2. I need a metaphor!
+
+* A queue is literally a queue. Or a line. Or a lineup. But unlike the real world,
+nobody is allowed to budge. Nothing can get "inserted" in the middle.
+
+h2. Examples of when to use a queue
+
+* Ticket waitlist at the DMV
+
+h2. How well does a queue perform
+
+* Finding an item: @O(n)@
+* Inserting an item: @O(1)@
+* Deleting an item: @O(1)@
+
+h2. Why is it O(1) time to insert something. Don't you have to go through n elements
+before you do an insertion?
+
+p. We're not talking about the entire process of finding and then inserting.
+Since you already know the index (location) of where to queue the last item,
+all it takes is a simple insertion at that index. Which is constant.
+
+
+p. Here's another way to think about it. If you had a queue of length 100 and you
+wanted to queue a new item. Would you have to look at every single item of the list
+to do your insertion if you already know the index of the item? No. You just do
+
+Code:
+my_queue[100] = 'new item'
+
+h2. What operations can you do with a queue?
+
+* enqueue, dequeue, find
+* Remember, you cannot enqueue or dequeue from anywhere but the end
+
+h2. What does this look like in code?
+
+File: my_queue.py
+my_queue = Queue()
+my_queue.queue('Anna')
+my_queue.queue('Bea')
+my_queue.queue('Candy')
+
+print(my_queue) # will look like ['Anna', 'Bea', 'Candy']
+
+my_queue.dequeue()
+
+print(my_queue) # will look like ['Anna', 'Bea']
+EOF
+
+h2. Wait is a queue just a list?
+
+Not really. You could use a linked list to implement (create) a queue, but a queue only has
+2 main methods. Enqueue and dequeue. You could use a linked list as a queue in this way.
+
+File: my_queue_using_lists.py
+my_queue = LinkedList()
+my_queue.append('Anna')
+my_queue.append('Bea')
+my_queue.append('Candy')
+
+print(my_queue) # will look like 'Anna' -> 'Bea' -> 'Candy'
+
+my_queue.delete(0) # just delete the first item. Another option is to do a popleft
+
+print(my_queue) # will look like ['Bea', 'Candy']
+EOF
+
+h2. Why use a linked list over an array for a queue?
+
+Technically, if you know the max number of elements you might need in a queue, you could use a circular array to implement a queue. If you don't do this, you will constantly have to shift all your items by one so that the head of the queue is not null. We use linked lists for queues as we don't have to do this shift at all.
+
+----------------------------------------------------------------------
+
+h1. Queues Exercise
+
+h2. Written Exercises
+
+1. What is the runtime of accessing an item in a queue?
+
+* Answer: @O(n)@
+
+2. What is the runtime for insertion in a queue?
+
+* Answer: @O(1)@
+
+3. What is the runtime for deleting an item in a queue?
+
+* Answer: @O(1)@
+
+4. @my_queue = [10, 2, 50, 30, 7]@. Write down what the queue will look like if you enqueue 1
+
+* Answer: @[10, 2, 50, 30, 7, 1]@
+
+5. @my_queue = [10, 2, 50, 30, 7]@. Write down what the queue will do if you dequeue it
+
+* Answer: @[2, 50, 30, 7]@
+
+6. @popped_item = [10, 2, 50, 30, 7].dequeue()@. What is the value of dequeued item?
+
+* Answer: @10@
+
+7. What's the difference between a queue and a linked list or an array?
+
+* Answer: An array or linked list has more operations than just enqueue and dequeue
+
+h2. Interview Questions
+
+p. There are many more ways to use queues when we get into binary trees, graphs, and more.
+For now here's a conceptual question.
+
+1. Design a circular queue (https://leetcode.com/problems/design-circular-queue/)
+
+----------------------------------------------------------------------
+
+h1. Linked List
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="linked_list.mp4"></source>
+  <source type="video/webm" src="linked_list.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h2. I need a metaphor
+
+p. TODO: draw conga line
+p. A linked list is like a conga line. The hands are the "chains" or "links" or "references" and the bodies
+are called "nodes".
+
+h2. How well does a linked list perform
+
+* Finding an element in the list: @O(n)@
+* Doing the insertion: @O(1)@
+* Doing the deletion: @O(1)@
+
+h2. What operations can you do with a linked list?
+
+* insert anywhere, find
+
+h2. What's the difference with a linked list and a stack?
+
+* In a stack, you cannot add an element in between. You can only take from the top.
+Linked lists have "chains" that you can unchain and attach to another node.
+
+h2. Why is a linked list better than an array?
+
+p. Suppose you wanted to store a list of people you want to call. An array structure would look like
+
+<img src="ll0.png" style="width: 500px"/>
+
+p. It would assign 2 spots in memory for you. Perfect for just 2 elements! But say you changed your mind and want to add a new person to call
+
+p. Then you'd have to move every single item on that list to a new area in memory.
+
+<img src="ll-1.png" style="width: 500px"/>
+
+p. So what could you do? Well, you could look for an area with 10 slots just in case. But what if you max out at only 5 items? Now you put those slots on hold for yourself, and nobody can use it. What a waste!
+
+p. If you use a linked list instead, your items can be anywhere in memory. The "links" can just point to the slot where the other tasks are.
+
+
+<img src="ll-2.png" style="width: 500px"/>
+
+h2. Why is a linked list worse than an array?
+
+p. x = ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Lab 5']
+
+p. Suppose you finished the entire data structures course, and just want to review certain topics, for example Lab 5. Imagine I didn't have a navbar, and you had to just keep pressing next to get to anywhere. Well, instead of instantly going to the Lab 5 section, you have to keep pressing next. That means you have to press next 4 times instead of 1 to get to it! And if after you review Lab 5, you want to go back to Lab 1, you have to go back 4 times! How horrible, but you have to do it because you don't know any of the addresses of each item until you hit the item right before it. Lab 5 could be in slot address 35, Lab 1 could be in slot 92.
+
+Arrays handle this problem better. You know the address for every item in your array. So we predictably know that address of Lab 5 will be 4 slots away from Lab 1. We don't have to ask Lab 2 what the address of Lab 3 is, Lab 3 what the address of Lab 4 is, and Lab 4, what the address of Lab 5 is. We know that each address is right next to each other. In other words, in an array, how far each item is from each other is the same as how far it is in memory.
+
+h2. Now explain the difference in code
+
+p. Getting third element in a linked list will take much longer "under the hood". To reach the third element, the computer will have to ask the first and second element to get the address of the third. This is akin to having to get the address of @x[0]@ and @x[1]@ in an array to get to @x[2]@. This means to search
+for an element within a linked list it will take @O(n)@ time -- at worst, we will need to access all the elements of the list
+
+<img src="ll-3.png" style="width: 500px"/>
+
+p. In an array, however, getting @x[2]@ will be much faster. To reach @x[2]@, all we have to do is find the address of @x[0]@. This means to search for an element within a linked list it will take @O(1)@ time -- we only need 1 element out of n elements to access anything in an array.
+
+h2. Summary
+
+
+----------------------------------------------------------------------
+
+h1. Linked List Exercise
+
+h2. Written Exercises
+
+p. These are logic exercises. Write the title and answers, then take a picture and
+send it to your instructor on Slack. She will either give it a thumbs up if it's 100% or tell you what the correct answer is if you are wrong. All your wrong answers are
+compiled and you will be tested on it again on Saturday.
+
+1. How long would it take for you to search for the 5th item on the list?
+
+2. What is the time complexity to search for something on the list. Remember to answer in
+big-O notation.
+
+* Answer: @O(n)@
+
+3. What is the space complexity of a linked list?
+
+* Answer: @O(n)@
+
+4. How long does it take do an insertion in a linked list?
+
+* Answer: @O(1)@
+
+5. What is more time efficient for insertions? Arrays or Linked Lists?
+
+* Answer: Linked Lists
+
+6. What is more space efficient? Arrays or Linked Lists?
+
+7. If we needed a data structure to do a lot of reads, do we use an Array or a Linked List?
+
+* Answer: Array
+
+8. What data structure should we use if we expect to do insertions in the middle of a list a lot?
+
+* Answer: Linked List
+
+9. What data structure should we use if we expect a lot of deletions? An Array or a Linked List?
+
+* Answer: Linked List
+
+h2. Interview Questions
+
+1. <a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list/">Linked List Cycle</a>
+2. <a href="https://leetcode.com/problems/linked-list-cycle/">Remove Nth Node From End of List</a>
+
+----------------------------------------------------------------------
+
+h1. Stacks, Queues, and Linked Lists Exercise
+
+h2. Written Questions
+
+1. When would you use a a queue vs a stack? Give some examples.
+
+* Answer: @When you want things to go in order like a printer queue. Stacks are useful when you want the 
+last things to come first. Like the callstack of a program@
+
+2. When we implement a queue with a singly linked list, which is preferrable? 1. Inserting at the head and removing at the tail or 2. Inserting at the tail, removing at the head?
+
+* Answer: 2. Inserting at the tail and removing at the head. These will both be constant time operations assuming we have a head and a tail pointer. We simply go to the currrent tail, add a new pointer to the new element and make the new element the new tail. Removing from the head will also be constant. We simply go to the current head remove the pointer and make the new element the new head. If we remove at the tail, we will have to go through the entire list again to find the predecessor of the tail and remove the pointer to the element that was deleted.
+
+h2. Interview Questions
+
+1. <a href="https://leetcode.com/problems/implement-stack-using-queues/">Implement a stack using queues</a>
+2. <a href="https://leetcode.com/problems/implement-queue-using-stacks/">Implement a queue using stacks</a>
+3. <a href="https://leetcode.com/problems/task-scheduler/">Task Scheduler</a>
+
+
+----------------------------------------------------------------------
+
+h1. Binary Heaps
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="heap.mp4"></source>
+  <source type="video/webm" src="heap.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h2. Goals
+
+* To understand what a binary heap is
+
+h2. I need a metaphor!
+
+p. Each person holds the head of the two people closest to their age but older than them. The hands represent the link, and the head represents the node.
+
+h2. How well does a binary heap perform
+* insert: O(n)
+* deleteMin: O(1)
+* remove: O(n)
+* findMin: O(1)
+
+h2. Why is there an array at the bottom of the video?
+
+
+p. Ah. That, my friend, is a trick for heaps. See, you could use trees to implement a heap and have pointers from the location of the parent to its children, but that costs extra memory. There's an equation we can use for heaps, however, to locate its index within an array:
+
+p.  @2*k@ for the left child and @2*k+1@ for the right child
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="arrayheap.mp4"></source>
+  <source type="video/webm" src="arrayheap.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+
+<img src="heap-memory.png" style="max-width: 700px">
+
+<img src="heap-equation.png" style="max-width: 500px">
+
+h2. Why do we use arrays instead of trees for heaps?
+
+p. Pointers use additional space in memory. Time-wise, allocating and deallocating pointers
+is also very expensive. Since there is a simple and predictable equation to ALWAYS
+get the location of a node's child, then it makes more sense to use an array. Another reason is that we often
+declare and know the size of the heap initially. This means that we can allocate the exact amount of space we need and won't need to move in memory since the heap won't need more space. Remember, one of the benefits of using a linked list is the fact that we can take any spot in memory that is not contiguous (directly next to) and just point to it. This is great for something that needs a lot of insertions and deletions and if you don't know the exact future size of the list. If you do know the size, however, arrays would be much more efficient.
+
+h2. Deleting in a heap
+
+p. We typically just delete the root in either a min or max heap TODO: add more
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="heap-del.mp4"></source>
+  <source type="video/webm" src="heap-del.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+
+h2. What does this look like in code?
+
+File: min_binary_heap.py
+class MinHeap:
+    def __init__(self):
+        self.heap = []
+
+    def push(self, value):
+        self.heap.append(value)
+        self.__swap_up(len(self.heap) - 1)
+        print(self.heap)
+
+    def pop(self):
+        if len(self.heap) == 0:
+            raise IndexError('pop from empty heap')
+
+        smallest_value_in_heap = self.heap[0]
+
+        self.heap[0] = self.heap[-1]
+        self.__swap_down(0)
+
+        print(self.heap)
+
+        return smallest_value_in_heap
+
+    def __swap_up(self, child_index):
+        while child_index > 0:
+            parent_index, parent_value = self.__get_parent(child_index)
+            child_value = self.heap[child_index]
+
+            if parent_value <= child_value:
+                break
+
+            self.heap[parent_index] = child_value
+            self.heap[child_index] = parent_value
+
+            child_index = parent_index
+
+    def __swap_down(self, parent_index):
+        while True:
+            parent_value = self.heap[parent_index]
+
+            new_parent_index, new_parent_value = self.__get_child_to_swap_with(parent_index)
+
+            if new_parent_index is None or new_parent_value is None:
+              del self.heap[-1]
+              break
+
+            self.heap[new_parent_index] = parent_value
+            self.heap[parent_index] = new_parent_value
+
+            parent_index = new_parent_index
+
+    def __get_child_to_swap_with(self, parent_index):
+            # the child we want to swap with is a child with a smaller value
+
+            parent_value = self.heap[parent_index]
+
+            left_child_index, left_child_value = self.__get_left_child(parent_index, parent_value)
+            right_child_index, right_child_value = self.__get_right_child(parent_index, parent_value)
+
+            if parent_value <= left_child_value and parent_value <= right_child_value:
+                # No point in swapping if parent_value <= child_value
+                return None, None
+
+            # Check which one is the smaller value, right child or left child?
+            if left_child_value < right_child_value:
+                new_parent_index = left_child_index
+            else:
+                new_parent_index = right_child_index
+
+            # new parent value will be the child with a smaller value than
+            # the current parent
+            new_parent_value = self.heap[new_parent_index]
+
+            return new_parent_index, new_parent_value
+
+    def __get_parent(self, index):
+        if index == 0:
+            return None, None
+
+        parent_index = (index - 1) // 2
+
+        return parent_index, self.heap[parent_index]
+
+    def __get_left_child(self, index, default_value):
+        left_child_index = 2 * index + 1
+
+        # no left child
+        if left_child_index > len(self.heap) - 1:
+            return None, default_value
+
+        return left_child_index, self.heap[left_child_index]
+
+    def __get_right_child(self, index, default_value):
+        right_child_index = 2 * index + 2
+
+        # no right child
+        if right_child_index > len(self.heap) - 1:
+            return None, default_value
+
+        return right_child_index, self.heap[right_child_index]
+
+EOF
+
+
+h2. Examples of when to use a binary heap
+
+p. Say that you were a doctor and you had to give priority to the youngest people. Whenever a person comes in, you check their age, and if they're younger than the person above them, then they'll have to switch spots. 
+
+
+----------------------------------------------------------------------
+
+h1. Heaps Exercise
+
+h2. Written Exercises
+
+p. These are logic exercises. Write the title and answers, then take a picture and
+send it to your instructor on Slack. She will either give it a thumbs up if it's 100% or tell you what the correct answer is if you are wrong. All your wrong answers are
+compiled and you will be tested on it again on Saturday.
+
+p. For any "Show the" make sure you draw the heap diagram form and the array form
+
+1. Show the result of inserting {7, 12, 6, 17, 10, 15} into a min heap.
+
+Ans:
+
+<img src="heap-ans1.png" style="max-width: 900px"/>
+
+2. Show the result after deleting min from the min heap
+
+Ans: 
+<img src="heap-ansheapdelete.png" style="max-width: 300px"/>
+
+3. Show the result of popping twice from the min heap
+<img src="heap-ansheap-delete2.png" style="max-width: 300px"/>
+
+4. Show the result of popping thrice from the min heap
+<img src="heap-ansheapdelete3.png" style="max-width: 300px"/>
+
+5. Show the result of inserting {7, 12, 6, 17, 10, 15} into a max heap
+
+6. What is the root of the max heap?
+
+7. What is the 6th smallest element of the max heap?
+
+7. What is the length of the max heap?
+
+8. Show the result after popping once from the max heap
+
+9. What is the 5th smallest element of the max heap?
+
+10. What is the length of the max heap?
+
+11. Show the result of popping twice from the max heap
+
+12. What is the 4th smallest element of the max heap?
+
+13. What is the length of the max heap?
+
+14. If someone asked you to get the kth smallest element of a list, describe how
+you would do it using heaps
+
+h2. Coding Exercises
+
+1. Write an implementation of max heap from scratch
+
+h2. Interview questions
+
+1. Kth largest element in an array (https://leetcode.com/problems/kth-largest-element-in-an-array/)
+
+----------------------------------------------------------------------
+
+h1. Binary Search Trees (BST)
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="bst.mp4"></source>
+  <source type="video/webm" src="bst.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+
+h2. Goals
+
+* To understand what a BST is
+
+h2. I need a metaphor!
+
+p. Each person has two friends max. Their left friend is always younger, and their right friend is always older.
+
+h2. What is a BST
+
+p. A data structure with a node and up to two children. The child to its left is < than the node, and the child to its right is > than the node.
+
+h2. How well does a BST perform
+
+* Find: O(logn) Worst case: O(n)
+* Insert: O(logn) Worst case: O(n)
+* Delete: O(logn) Worst case: O(n)
+
+h2. What is the difference between a Binary Tree and a BST?
+
+p. A BST guarantees that the value of children on the left side of a node is <= than the value of a node and that the value on the right side of the node is >= than the value of the node. A binary tree merely guarantees that each node has up to two children
+
+h2. Searching a BST
+
+p. There are different ways to search a binary search tree. The two most common ways are via a Depth First Search (DFS)  or a Breadth First Search (BFS). 
+
+h2. What is a DFS?
+
+p. A Depth First Search is an algorithm for traversing trees (and graphs) by going as far down the tree as possible and going from there
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="dfs-bst.mp4"></source>
+  <source type="video/webm" src="dfs-bst.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h2. But what's the point of it?
+
+p. It can be used for a lot of things! A fun and immediately useful implementation is for games. Like mazes! Maze generation, maze solving, tic-tac-toe, and chess. DFS allows you to search for an outcome based on a set of moves, then "backtrack" until you reach a path that successfully completes the task. In the end, you can get a tree that shows all possible solutions to get to your goal.
+
+p. TODO: do implementation / a visualization
+
+<br/>
+
+h2. But wait. There are multiple ways to do a DFS with a BST!
+
+p. There are 3 ways to do a DFS that's related to the order we should look at first. The root, the left child or the right child?
+
+<div style="text-align: center">
+<img src="bst-hats.png" style="width: 300px"/>
+<img src="dfsorderr.png" style="width: 800px"/>
+</div>
+
+<br/>
+
+h3. Pre-order DFS
+
+p. Pre-order goes from root, left, right.
+
+<img src="preorder.png" style="width: 300px"/>
+
+p. In the visualization above the final order would be @7, 4, 3, 6, 5, 9, 14@
+
+p. A practical application for a preorder would be to copy a BST (note: and only a BST. not regular binary trees)
+
+<br/>
+
+h3. In-order DFS
+
+p. In-order goes from left, root, right.
+<img src="inorder.png" style="width: 300px"/>
+
+p. In the visualization above the final order would be @3, 4, 5, 6, 7, 9, 14@
+
+p. A practical application for an in-order would be if you want things in generally increasing order
+
+<br/>
+
+h3. Post-order DFS
+
+p. Post-order goes from right, left, root.
+<img src="postorder.png" style="width: 300px"/>
+
+p. In the visualization above the final order would be @14, 9, 5, 6, 3, 4, 7@
+
+p. A practical application for this is when you want to delete the binary search tree from leaf to root
+
+h2. BFS
+
+p. BFS, or Breadth First Traversal involves traversing the tree level by level and left to right. I like to imagine that this is much more natural to grasp than a DFS as it's very similar to just reading.
+
+p. The final order for the visualization below would be @7, 4, 9, 3, 6, 14, 5@
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="bfs-bst.mp4"></source>
+  <source type="video/webm" src="bfs-bst.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h2. When should I use BFS vs DFS?
+
+p. If we're searching for something that is likely closer to the root, we would use a BFS. If it's likely a leaf, use DFS.
+
+
+h2. Inserting into a BST
+
+p. As per video above which I've put back down below! Remember, there's no concept of percolation. Every new node just becomes a leaf.
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="bst.mp4"></source>
+  <source type="video/webm" src="bst.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+
+h2. Deleting From a BST
+
+What better way than to show you the 3 cases?
+
+h3. Case 1: Delete a leaf
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="delete-bst-0.mp4"></source>
+  <source type="video/webm" src="delete-bst-0.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h3. Case 2: Delete a node with one child
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="delete-bst-1.mp4"></source>
+  <source type="video/webm" src="delete-bst-1.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h3. Case 3: Delete a node with two children
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="delete-bst-2.mp4"></source>
+  <source type="video/webm" src="delete-bst-2.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+
+h2. What does this look like in code?
+
+File: bst.py
+class BST:
+  def __init__(self, value, left_bst=None, right_bst=None):
+    self.value = value
+    self.left_bst = left_bst
+    self.right_bst = right_bst
+
+  def find(self, current_node, val):
+    if current_node is None:
+      return False
+    elif val == current_node.val:
+      return current_node
+    elif val < current_node.val:
+      return self.find(current_node.left, val)
+    else:
+      return self.find(current_node.right, val)
+
+  def insert(self, current_node, val):
+    if val <= current_node:
+      if current_node.left_bst is not None:
+        self.insert(current_node.left, val)
+      else:
+        current_node.left_bst = current_node
+    else:
+      if current_node.right_bst is not None:
+        self.insert(current_node.right, val)
+      else:
+        current_node.right_bst = current_node
+EOF
+
+h2. Why is the worst case of finding, inserting, and deleting O(n)?
+
+<div>
+  <img src="bst-c0.png" style="width: 300px" style="float: left"/>
+  <img src="bst-c1.png" style="width: 300px" style="float: right"/>
+</div>
+
+p. Let's look at case 2 @[5, 4, 3, 2, 1]@. We have 5 nodes. If we had to search for @1@
+we have to pass over each node. First 5 then 4, then 3, then 2, then 1. 
+
+p. If we had something like case 1 @[3,4,5,2,1]@. We would still have 5 nodes, but if we had to search for @1@ we only have to pass over max 3 nodes (3, 4, 1). So in a balanced tree, on average we got @O(logn)@ performance, but in the worst case, if it resembles a linked list we have to pass over every single node, which gives us @O(n)@
+
+h2. Why do we use trees instead of arrays for bsts?
+
+p. We use trees instead of arrays for bsts because there is no predictable and simple way
+to find the location of its children. Heaps, however, are a special case of Binary Trees, it is a 
+perfect binary tree, in which every node other than the leaves has two children. As we saw above though, we know that a BST can almost resemble a linked list. 
+
+h2. Examples of when to use a BST
+
+p. Dictionaries, phone books
+
+h2. Summary
+
+* A BST is a tree-like data structure in which each node has a maximum of 2 children. The child to the left
+of each node is < the value of the node and the right child is > than the value of the node.
+
+* We can do a BFS or a DFS of a BST
+
+
+
+
+----------------------------------------------------------------------
+
+h1. Binary Search Tree Exercise
+
+h2. Written Questions
+
+<img src="bst-q0.png" style="width: 300px;"/>
+
+1. Given this tree, write down the node values it will see first given a pre-order traversal
+
+2. Given this tree, write down the node values it will see first given an in-order traversal
+
+3. Given this tree, write down the node values it will see first given an post-order traversal
+
+4. Should you use a DFS or a BFS to find the shortest path? Why?
+
+6. If you wanted to copy a tree what would be the best way to do this? Why?
+
+7. Draw the tree after you insert 4 and then 6
+
+<img src="bst-q1.png" style="width: 300px;"/>
+
+8. Draw the tree after you delete 5
+
+<img src="bst-q2.png" style="width: 300px;"/>
+
+h2. Interview Questions
+
+1. <a href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/">Find the minimum value in a BST</a>
+
+2. Find the maximum value in a BST
+
+3. <a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/">Given values of two values in a BST, find the Lowest Common Ancestor (LCA)</a>
+
+4. <a href="https://leetcode.com/problems/same-tree/">Given two BSTs check if they are identical</a>
+
+5. Write an In-order iterator for a BST. We are given root node of a binary tree and we have to write an iterator that takes in this root and iterates through the nodes of binary tree in an inorder way. The expectation is to write two critical methods of any iterator: hasNext() and getNext().
+
+6. Iterative In-order traversal. Given a binary tree, write an iterative algorithm to traverse the tree inorder.
+
+7. <a href="https://leetcode.com/problems/validate-binary-search-tree/">Check if tree is BST. Given a binary tree, check to see if it is a BST</a>
+
+8. <a href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/">Get the Kth smallest element in a BST</a>
+
+9. <a href="https://leetcode.com/problems/kth-smallest-element-in-a-bst">Get the Nth smallest in a BST</a>
+
+----------------------------------------------------------------------
+
+h1. Binary Heaps and BSTs Exercise
+
+----------------------------------------------------------------------
+
+h1. Graphs
+
+<video width="640" height="480" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="graph.mp4"></source>
+  <source type="video/webm" src="graph.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+
+h2. Goals
+
+* To understand what a graph is
+
+h2. What is a graph
+
+h2. Types of graphs
+
+# TODO add images of both types of graphs 
+* Directed 
+* Undirected
+
+h2. Types of graph searches
+
+* A* search
+* BFS
+* DFS
+
+h2. BFS (Use a queue)
+
+<video width="960" height="720" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="bfs-graph.mp4"></source>
+  <source type="video/webm" src="bfs-graph.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h2. DFS (Use a stack  / recursion)
+
+TODO: maybe show the call stack?
+
+<video width="960" height="720" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="dfsgraph.mp4"></source>
+  <source type="video/webm" src="dfsgraph.webm"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h2. Dijkstra
+
+h2. How well does a graph perform
+
+* addNode: O(1)
+* addEdge: O(1)
+* removeNode: O(n)
+* removeEdge: O(1)
+* contains: O(1)
+* hasEdge: O(1)
+
+h2. Code: Adjacency List vs Adjacency Matrix
+
+p. The two main representations of a graph is an Adjacency List and an Adjacency Matrix.
+
+<img src="graph.png" style="width: 300px"/>
+<div>
+  <img src="adj_list.png" style="width: 300px;"/>
+  <img src="adj_mat.png" style="width: 300px;"/>
+</div>
+
+h2. What does this look like in Code?
+
+TODO
+
+h2. Why is removeNode O(n) time?
+
+We have to iterate through all the nodes to see whether or not it has an edge
+connected to the node you are trying to remove
+
+h2. Examples of when to use a graph
+
+p. Social networks, maps
+
+----------------------------------------------------------------------
+
+h1. Graphs Exercise
+
+h2. Written
+
+1. Clone a directed graph
+
+2. Find the minimum spanning tree of a connected, undirected graph with weighted edges.
+
+3. Figure out whether the given words can form a circular chain. Assume that single word can never form a chain.
+
+h2. Coding Questions
+
+1. <a href="https://leetcode.com/problems/clone-graph/">Clone an undirected graph</a>
+
+----------------------------------------------------------------------
+
+h1. Hash Table
+
+<video width="960" height="720" autoplay controls controlsList="nofullscreen nodownload novolume" >
+  <source type="video/mp4" src="hashtable.mp4"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
+
+h2. Goals
+
+* To understand what a hash table is
+
+h2. What is a hash table
+
+p. A hashtable is a data structure that uses an array "under the hood" but efficiently accesses items by using a hash function to access items quickly
+
+h2. What does a hashtable look like in code?
+
+File: hash_table.py
+def hash_func(key, max):
+  total = 0
+  for i in range(len(key)):
+     total += ord(key[i]) * (7**i)
+  return (len(key) * total) % max
+
+class HashTable:
+  def __init__(self, storage_limit = 1000):
+    self.storage_limit = storage_limit
+    self.storage = [[]] * storage_limit
+
+  def insert(self, key, val):
+    index = hash_func(key, self.storage_limit)
+    bucket = self.storage[index]
+    replaced = False
+
+    for tup in bucket:
+      if tup[0] == key:
+        tup[1] = val
+        replaced = True
+
+    if replaced == False:
+      bucket.append([key, val])
+
+  def retrieve(self, key):
+    index = hash_func(key, self.storage_limit)
+    bucket = self.storage[index]
+
+    for tup in bucket:
+      if tup[0] == key:
+        return tup[1]
+    return None
+
+  def remove(self, key):
+    index = hash_func(key, self.storage_limit)
+    bucket = self.storage[index]
+
+    for i in range(len(bucket)):
+      if bucket[i][0] == key:
+        del bucket[i]
+EOF
+
+h2. Linear Probing and Separate Chaining
+
+p. Collisions are usually resolved with either linear probing or separate chaining for a hash table.
+
+With Linear Probing, each hash cell only contains one key-value pair. What does this mean? It means there isn't really a concept of bucketizing data. We merely just go to the next address until we find an open slot.
+
+With Separate Chaining, each hash cell usually has a linked list. When we get the address from the hash function, and we have a collision, we just add a new node to the linked list at that particular address.
+
+TODO: show images of separate chaining and linear hashing
+
+
+h2. How well does a hash table perform
+
+* Search: @O(1)@
+* Insertion: @O(1)@
+* Space: @O(n)@
+
+h2. Why does a hash table take up O(n) space?
+
+p. The space it takes up grows linearly with how much data you add.
+
+h2. Why does a search take up O(1) time?
+
+p. Via the hash function, we are given the address of where the key-value pair is in constant time
+
+h2. Examples of when to use a hash table
+* Implementing any search
+
+----------------------------------------------------------------------
+
+h1. Hash Table Exercises 
+
+h2. Written Exercise
+
+1. What is the runtime of searching for a value given a key in a hash table?
+
+2. What is the runtime of searching for a key given a value in a hash table?
+
+3. What is the runtime for inserting into a hash table? 
+
+4. What is the memory complexity of a hash table?
+
+
+h2. Coding Exercise
+
+1. Implement a hash table with linear probing from scratch
+
+* Answer:
+File: hash_table_linear_probing.py
+def hash_func(key, max):
+  total = 0
+  for i in range(len(key)):
+     total += ord(key[i]) * (7**i)
+  return (len(key) * total) % max
+
+class HashTableLinearProbing:
+  def __init__(self, storage_limit = 1000):
+    self.storage_limit = storage_limit
+    self.storage = [(None, None)] * storage_limit
+
+  def insert(self, key, val):
+    index = hash_func(key, self.storage_limit)
+    tup = self.storage[index]
+
+    if tup[0] == key:
+      tup[1] = val
+      replaced = True
+    else:
+      while(index < self.storage_limit):
+        if self.storage[index][0] is None:
+          self.storage[index] = (key, val)
+          break
+        else:
+          print('Collision hit!')
+          index += 1
+
+  def retrieve(self, key):
+    index = hash_func(key, self.storage_limit)
+
+    while(index < self.storage_limit):
+      if self.storage[index][0] == key:
+        return self.storage[index][1]
+      else:
+        index += 1
+    raise KeyError(key)
+
+  def remove(self, key):
+    index = hash_func(key, self.storage_limit)
+
+    while(index < self.storage_limit):
+      if self.storage[index][0] == key:
+        self.storage[index] = (None, None)
+        break
+EOF
+
+2. Implement a hash table with separate chaining from scratch
+
+File: hash_table_separate_chaining.py
+
+# TODO: do hash table separate chaining
+
+class LinkedList:
+  def __init__(self):
+    pass
+
+class HashTableSeparateChaining:
+  def __init__(self, storage_limit):
+    pass
+
+EOF
+
+
+
+----------------------------------------------------------------------
+
+h1. All data structures exercise
+
+h2. Interview Questions
+
+1. Iterative in-order binary tree traversal(https://leetcode.com/problems/binary-tree-inorder-traversal/)
